@@ -45,8 +45,8 @@ const Sidebar: React.FC = () => {
               {selectedEvents?.checkedEvents?.length > 0 ? (
                 <div className="Evnt_list">
                   {selectedEvents?.checkedEvents.map((event: any) => (
-                    <ul key={event.Id}>
-                      <strong>{event.Name}</strong>
+                    <ul key={event.id}>
+                      <strong>{event.event_name}</strong>
                       <li>
                         <NavLink to="/events">
                           <span className="nav-text">Overview</span>

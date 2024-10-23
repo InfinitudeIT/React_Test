@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000'; // Load from .env
+const apiBaseUrl = 'http://localhost:8000'; // Load from .env
 
 // Generic GET request
 export const getRequest = async (endpoint, params = {}) => {
@@ -20,7 +20,7 @@ export const getRequest = async (endpoint, params = {}) => {
 };
 // Generic POST request
 export const registerUser = async (formData) => {
-  const response = await fetch('http://localhost:8000/register', {
+  const response = await fetch(`${apiBaseUrl}/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const loginUser = async (formData) => {
   formParams.append("password", formData.password);
  
   try {
-    const response = await fetch("http://localhost:8000/login", {
+    const response = await fetch(`${apiBaseUrl}/login`, {
       method: 'POST',
       headers: {
         "Content-Type": 'application/x-www-form-urlencoded',
@@ -87,7 +87,7 @@ export const saveEvent = async (formData) => {
   const token = localStorage.getItem("token"); // Retrieve the token from localStorage
 
   try {
-    const response = await axios.post("http://localhost:8000/create_event", formParams, {
+    const response = await axios.post(`${apiBaseUrl}/create_event`, formParams, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${token}`, // Include the token in the request
@@ -114,9 +114,12 @@ export const updateEvent = async (eventId, formData) => {
   formParams.append("delegates", formData.delegates ? 'true' : 'false');
   formParams.append("speaker", formData.speaker ? 'true' : 'false');
   formParams.append("nri", formData.nri ? 'true' : 'false');
+  formParams.append("lunch", formData.lunch ? 'true': 'false');
+  formParams.append("kit", formData.kit ? 'true': 'false');
+
 
   try {
-    const response = await axios.put(`http://localhost:8000/edit_event/{event_id}`, formParams, {
+    const response = await axios.put(`${apiBaseUrl}/edit_event/${eventId}`, formParams, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${token}`, // Include the token in the request
@@ -141,7 +144,25 @@ export const getEvents = async () => {
   const userId = localStorage.getItem("loggedInUserId");
 
   try {
-    const response = await axios.get(`http://localhost:8000/user_events/${userId}`, {
+    const response = await axios.get(`${apiBaseUrl}/user_events/${userId}`, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `Bearer ${token}`, // Include the token in the request
+      },
+      withCredentials: true, // Include if you need to send credentials (e.g., cookies)
+    });
+    return response.data; // Now includes the event id in the response
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw error;
+  }
+};
+
+export const getEventById = async (eventId) => {
+  const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+  
+  try {
+    const response = await axios.get(`${apiBaseUrl}/event/${eventId}`, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${token}`, // Include the token in the request
@@ -162,7 +183,7 @@ export const deleteEvent = async (eventid) => {
   const token = localStorage.getItem("token"); // Retrieve the token from localStorage
 
   try {
-    const response = await axios.post("http://localhost:8000/delete_event", formParams, {
+    const response = await axios.post(`${apiBaseUrl}/delete_event`, formParams, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": `Bearer ${token}`, // Include the token in the request
